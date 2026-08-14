@@ -1,0 +1,6 @@
+{
+  "name": "PRIME OS — Performance Operating System",
+  "description": "Personal Performance Operating System unifying athletic training, body composition, health, finances, learning, spiritual practice, and coaching business operations for Muhammed Roshan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
