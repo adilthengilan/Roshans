@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { usePrimeStore } from '../../lib/store';
 import { GivenSessionPlanRecord } from '../../types';
-import coachDanishImg from '../../assets/images/coach_danish_portrait_1786654260335.jpg';
-import coachRoshanImg from '../../assets/images/coach_roshan_portrait_1786654271869.jpg';
-import coachMuqeethImg from '../../assets/images/coach_muqeeth_portrait_1786654282250.jpg';
 import {
   TrendingUp,
   DollarSign,
@@ -1236,15 +1233,17 @@ export const BusinessView: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {coachStats.map((st) => {
-                const portrait =
-                  coachAvatars?.[st.coachName] ||
-                  (st.coachName.toLowerCase().includes('danish')
-                    ? coachAvatars?.['Coach Danish'] || coachDanishImg
-                    : st.coachName.toLowerCase().includes('roshan')
-                    ? coachAvatars?.['Coach Roshan'] || coachRoshanImg
-                    : st.coachName.toLowerCase().includes('muqeeth')
-                    ? coachAvatars?.['Coach Muqeeth'] || coachMuqeethImg
-                    : null);
+                const isDanish = st.coachName.toLowerCase().includes('danish');
+                const isRoshan = st.coachName.toLowerCase().includes('roshan');
+                const isMuqeeth = st.coachName.toLowerCase().includes('muqeeth');
+                const badgeGradient = isDanish
+                  ? 'from-blue-600 to-cyan-500'
+                  : isRoshan
+                  ? 'from-indigo-600 to-violet-500'
+                  : isMuqeeth
+                  ? 'from-rose-600 to-red-500'
+                  : 'from-[#ec2226]/30 to-[#6ccbde]/30';
+                const initial = isDanish ? 'D' : isRoshan ? 'R' : isMuqeeth ? 'M' : st.coachName.split(' ')[1]?.[0] || 'C';
 
                 return (
                   <div
@@ -1253,18 +1252,9 @@ export const BusinessView: React.FC = () => {
                   >
                     <div className="flex items-center justify-between border-b border-[#2e2e32] pb-2">
                       <div className="flex items-center gap-2.5">
-                        {portrait ? (
-                          <img
-                            src={portrait}
-                            alt={st.coachName}
-                            referrerPolicy="no-referrer"
-                            className="w-9 h-9 rounded-xl object-cover border border-white/10 shrink-0"
-                          />
-                        ) : (
-                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ec2226]/30 to-[#6ccbde]/30 text-white font-black text-xs flex items-center justify-center shrink-0">
-                            {st.coachName.split(' ')[1]?.[0] || 'C'}
-                          </div>
-                        )}
+                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${badgeGradient} text-white font-black text-xs flex items-center justify-center shrink-0 border border-white/10 shadow-sm`}>
+                          {initial}
+                        </div>
                         <div>
                           <div className="text-xs font-black text-white">{st.coachName}</div>
                           <div className="text-[10px] text-neutral-400">Head Performance Staff</div>
@@ -1917,7 +1907,7 @@ export const BusinessView: React.FC = () => {
           {nutritionSubView === 'assessments' && (
             <div className="space-y-3">
               {assessmentRecords
-                .filter((a) => !nutSearchTerm.trim() || a.clientName.toLowerCase().includes(nutSearchTerm.toLowerCase()) || a.assessedBy.toLowerCase().includes(nutSearchTerm.toLowerCase()))
+                .filter((a) => !nutSearchTerm.trim() || a.clientName.toLowerCase().includes(nutSearchTerm.toLowerCase()) || (a.assessedBy || a.coachName || '').toLowerCase().includes(nutSearchTerm.toLowerCase()))
                 .length === 0 ? (
                 <div className="p-8 text-center bg-[#161618] border border-[#2e2e32] rounded-xl space-y-2">
                   <HeartPulse className="w-8 h-8 text-neutral-500 mx-auto" />
@@ -1929,7 +1919,7 @@ export const BusinessView: React.FC = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {assessmentRecords
-                    .filter((a) => !nutSearchTerm.trim() || a.clientName.toLowerCase().includes(nutSearchTerm.toLowerCase()) || a.assessedBy.toLowerCase().includes(nutSearchTerm.toLowerCase()))
+                    .filter((a) => !nutSearchTerm.trim() || a.clientName.toLowerCase().includes(nutSearchTerm.toLowerCase()) || (a.assessedBy || a.coachName || '').toLowerCase().includes(nutSearchTerm.toLowerCase()))
                     .map((ass) => (
                       <div
                         key={ass.id}
@@ -1969,14 +1959,14 @@ export const BusinessView: React.FC = () => {
                           </div>
                         </div>
 
-                        {ass.notes && (
+                        {(ass.coachObservations || ass.notes) && (
                           <div className="text-xs text-neutral-300 bg-[#242428] p-2 rounded-lg border border-[#3e3e42] font-mono">
-                            {ass.notes}
+                            {ass.coachObservations || ass.notes}
                           </div>
                         )}
 
                         <div className="pt-2 border-t border-[#2e2e32] flex items-center justify-between text-xs text-neutral-400">
-                          <span className="text-[10px] font-mono">Assessed By: {ass.assessedBy}</span>
+                          <span className="text-[10px] font-mono">Assessed By: {ass.assessedBy || ass.coachName || 'Staff Coach'}</span>
                           <span className="text-[10px] font-mono text-amber-400 flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" /> System 2 Synced
                           </span>

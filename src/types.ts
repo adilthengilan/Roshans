@@ -463,21 +463,83 @@ export interface SessionMasterRecord {
   syncedToSystem2: boolean;
 }
 
+export interface SkillProgressItem {
+  id?: string;
+  skillName: string;
+  category: 'Gymnastics & Calisthenics' | 'Olympic Weightlifting' | 'Martial Arts & Striking' | 'Functional Mobility' | 'Power & Speed';
+  level: 'Novice (Level 1)' | 'Developing (Level 2)' | 'Proficient (Level 3)' | 'Advanced (Level 4)' | 'Elite / Mastered (Level 5)';
+  progressPercentage: number; // 0 - 100
+  benchmarkMetric?: string; // e.g. '5 Unbroken Reps', '30s Free Hold', '85kg 1RM'
+  coachingCues?: string;
+  unlockedMilestones?: string[];
+}
+
+export interface BodyGirthMeasurements {
+  neckCm?: number;
+  chestCm?: number;
+  leftArmCm?: number;
+  rightArmCm?: number;
+  waistCm?: number;
+  hipsCm?: number;
+  leftThighCm?: number;
+  rightThighCm?: number;
+  leftCalfCm?: number;
+  rightCalfCm?: number;
+}
+
+export interface CaliperSkinfoldMeasurements {
+  chestMm?: number;
+  abdominalMm?: number;
+  thighMm?: number;
+  tricepsMm?: number;
+  subscapularMm?: number;
+  suprailiacMm?: number;
+}
+
 export interface AssessmentRecord {
   id: string;
   clientId: string;
   clientName: string;
   date: string;
-  coachName: string;
+  coachName?: string;
+  assessedBy?: string;
+  
+  // Core Biomarkers (Interactive Graph Metrics)
+  weightKg: number;
   bodyFatPercentage: number;
-  postureScore: number; // 1-10
-  mobilityScore: number; // 1-10
-  benchPress1RM: number; // kg
-  squat1RM: number; // kg
-  deadlift1RM: number; // kg
-  aerobicCapacityScore: number; // 1-100
-  powerOutputWatt: number;
-  coachObservations: string;
+  vo2Max: number; // ml/kg/min
+  muscleMassKg?: number;
+  restingHeartRateBpm?: number;
+  bloodPressureSystolic?: number; // mmHg
+  bloodPressureDiastolic?: number; // mmHg
+
+  // Trainerize Body Girths & Caliper measurements
+  girths?: BodyGirthMeasurements;
+  skinfolds?: CaliperSkinfoldMeasurements;
+
+  // Strength & Power 1RM Benchmarks
+  benchPress1RM?: number; // kg
+  squat1RM?: number; // kg
+  deadlift1RM?: number; // kg
+  overheadPress1RM?: number; // kg
+  pullUpMaxReps?: number;
+  powerOutputWatt?: number;
+  verticalJumpCm?: number;
+
+  // Movement & Posture Screen (FMS)
+  postureScore?: number; // 1-10
+  mobilityScore?: number; // 1-10
+  aerobicCapacityScore?: number; // 1-100
+  movementDeficiencies?: string[];
+
+  // Skill Progress Assessment
+  skillProgressions?: SkillProgressItem[];
+
+  // Notes & Observations
+  coachObservations?: string;
+  notes?: string;
+  targetMilestone?: string;
+  nextAssessmentDate?: string;
 }
 
 export interface NutritionPlanRecord {

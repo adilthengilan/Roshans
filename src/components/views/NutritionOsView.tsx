@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { usePrimeStore } from '../../lib/store';
-import healthyMealImg from '../../assets/images/healthy_nutrition_dish_1786654303630.jpg';
 import {
   Apple,
   Search,
@@ -195,12 +194,9 @@ export const NutritionOsView: React.FC = () => {
       <div className="bg-[#14161f] border border-white/[0.08] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3.5">
-            <img
-              src={healthyMealImg}
-              alt="Athletic Nutrition Protocol"
-              referrerPolicy="no-referrer"
-              className="w-14 h-14 rounded-2xl object-cover border border-emerald-500/30 shadow-md hidden sm:block shrink-0"
-            />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-inner hidden sm:flex">
+              <Apple className="w-6 h-6 sm:w-7 sm:h-7 stroke-[1.75]" />
+            </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -728,12 +724,9 @@ export const NutritionOsView: React.FC = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <img
-                      src={healthyMealImg}
-                      alt={prot.title}
-                      referrerPolicy="no-referrer"
-                      className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0 mt-0.5"
-                    />
+                    <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-inner">
+                      <Apple className="w-5 h-5 stroke-[1.75]" />
+                    </div>
                     <div>
                       <h4 className="text-sm font-bold text-white leading-tight">{prot.title}</h4>
                       <p className="text-xs text-neutral-400 mt-0.5 line-clamp-2">{prot.summary}</p>

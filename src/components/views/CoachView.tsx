@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePrimeStore } from '../../lib/store';
 import { BatchMemberStatus, BatchTrainingGroup } from '../../types';
 import { TrainerizeSessionPlanner } from './TrainerizeSessionPlanner';
-import coachDanishImg from '../../assets/images/coach_danish_portrait_1786654260335.jpg';
-import coachRoshanImg from '../../assets/images/coach_roshan_portrait_1786654271869.jpg';
-import coachMuqeethImg from '../../assets/images/coach_muqeeth_portrait_1786654282250.jpg';
-import facilityGymImg from '../../assets/images/luxury_athletic_facility_1786654293401.jpg';
+import { CoachAssessmentWorkspace } from './CoachAssessmentWorkspace';
 import {
   Users,
   Calendar,
@@ -141,12 +138,25 @@ export const CoachView: React.FC = () => {
   const [postponeReason, setPostponeReason] = useState<string>('Client requested postponement due to travel / conflict');
   const [postponeToast, setPostponeToast] = useState<string | null>(null);
 
-  const getCoachAvatar = (coachName: string) => {
-    if (coachAvatars?.[coachName]) return coachAvatars[coachName];
-    if (coachName.toLowerCase().includes('danish')) return coachAvatars?.['Coach Danish'] || coachDanishImg;
-    if (coachName.toLowerCase().includes('roshan')) return coachAvatars?.['Coach Roshan'] || coachRoshanImg;
-    if (coachName.toLowerCase().includes('muqeeth')) return coachAvatars?.['Coach Muqeeth'] || coachMuqeethImg;
-    return coachAvatars?.['Coach Danish'] || coachDanishImg;
+  const getCoachInitials = (coachName: string) => {
+    if (coachName.toLowerCase().includes('danish')) return 'D';
+    if (coachName.toLowerCase().includes('roshan')) return 'R';
+    if (coachName.toLowerCase().includes('muqeeth')) return 'M';
+    const parts = coachName.split(' ');
+    return parts[1]?.[0] || parts[0]?.[0] || 'C';
+  };
+
+  const getCoachBadgeColors = (coachName: string) => {
+    if (coachName.toLowerCase().includes('danish')) {
+      return 'from-blue-600 to-cyan-500 text-white border-blue-400/40';
+    }
+    if (coachName.toLowerCase().includes('roshan')) {
+      return 'from-indigo-600 to-violet-500 text-white border-indigo-400/40';
+    }
+    if (coachName.toLowerCase().includes('muqeeth')) {
+      return 'from-rose-600 to-red-500 text-white border-red-400/40';
+    }
+    return 'from-amber-600 to-orange-500 text-white border-amber-400/40';
   };
 
   // Helper: Get 7 Days of Active Week around scheduleSelectedDate
@@ -438,12 +448,13 @@ export const CoachView: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3.5">
             <div className="shrink-0">
-              <img
-                src={getCoachAvatar(currentCoachName)}
-                alt={currentCoachName}
-                referrerPolicy="no-referrer"
-                className="w-14 h-14 rounded-2xl object-cover border-2 border-[#06b6d4]/40 shadow-md"
-              />
+              <div
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${getCoachBadgeColors(
+                  currentCoachName
+                )} border flex items-center justify-center font-black text-lg sm:text-xl shadow-md`}
+              >
+                {getCoachInitials(currentCoachName)}
+              </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -484,14 +495,13 @@ export const CoachView: React.FC = () => {
             }`}
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <img
-                src={getCoachAvatar('Coach Danish')}
-                alt="Coach Danish"
-                referrerPolicy="no-referrer"
-                className={`w-10 h-10 rounded-xl object-cover shrink-0 border ${
-                  isCoachDanish ? 'border-blue-500 ring-2 ring-blue-500/30' : 'border-white/10 opacity-85'
+              <div
+                className={`w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white font-black text-sm flex items-center justify-center shrink-0 border ${
+                  isCoachDanish ? 'border-blue-500 ring-2 ring-blue-500/30' : 'border-white/10 opacity-90'
                 }`}
-              />
+              >
+                D
+              </div>
               <div className="min-w-0">
                 <div className={`font-bold text-xs flex items-center gap-1.5 truncate ${isCoachDanish ? 'text-slate-900' : 'text-white'}`}>
                   <span>Coach Danish</span>
@@ -515,14 +525,13 @@ export const CoachView: React.FC = () => {
             }`}
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <img
-                src={getCoachAvatar('Coach Roshan')}
-                alt="Coach Roshan"
-                referrerPolicy="no-referrer"
-                className={`w-10 h-10 rounded-xl object-cover shrink-0 border ${
-                  isCoachRoshan ? 'border-indigo-500 ring-2 ring-indigo-500/30' : 'border-white/10 opacity-85'
+              <div
+                className={`w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white font-black text-sm flex items-center justify-center shrink-0 border ${
+                  isCoachRoshan ? 'border-indigo-500 ring-2 ring-indigo-500/30' : 'border-white/10 opacity-90'
                 }`}
-              />
+              >
+                R
+              </div>
               <div className="min-w-0">
                 <div className={`font-bold text-xs flex items-center gap-1.5 truncate ${isCoachRoshan ? 'text-slate-900' : 'text-white'}`}>
                   <span>Coach Roshan</span>
@@ -546,14 +555,13 @@ export const CoachView: React.FC = () => {
             }`}
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <img
-                src={getCoachAvatar('Coach Muqeeth')}
-                alt="Coach Muqeeth"
-                referrerPolicy="no-referrer"
-                className={`w-10 h-10 rounded-xl object-cover shrink-0 border ${
-                  isCoachMuqeeth ? 'border-[#ec2226] ring-2 ring-[#ec2226]/30' : 'border-white/10 opacity-85'
+              <div
+                className={`w-10 h-10 rounded-xl bg-gradient-to-br from-rose-600 to-red-500 text-white font-black text-sm flex items-center justify-center shrink-0 border ${
+                  isCoachMuqeeth ? 'border-[#ec2226] ring-2 ring-[#ec2226]/30' : 'border-white/10 opacity-90'
                 }`}
-              />
+              >
+                M
+              </div>
               <div className="min-w-0">
                 <div className={`font-bold text-xs flex items-center gap-1.5 truncate ${isCoachMuqeeth ? 'text-slate-900' : 'text-white'}`}>
                   <span>Coach Muqeeth</span>
@@ -1824,136 +1832,7 @@ export const CoachView: React.FC = () => {
 
       {/* TAB 4: ASSESSMENTS */}
       {activeTab === 'assessments' && (
-        <div className="bg-[#161618] border border-[#26262A] rounded-2xl p-4 space-y-4 shadow-lg">
-          <div className="flex items-center justify-between pb-2 border-b border-[#26262A]">
-            <div>
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Activity className="w-4 h-4 text-purple-400" /> Physical Assessment & Biomarker Tracking
-              </h3>
-              <p className="text-[11px] text-neutral-400">
-                Track assessments for clients assigned to <strong className="text-purple-300">{currentCoachName}</strong>.
-              </p>
-            </div>
-          </div>
-
-          {assSuccessMsg && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-bold flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" /> Assessment record added to System 2!
-            </div>
-          )}
-
-          <form onSubmit={handleSaveAssessment} className="space-y-3">
-            <div>
-              <label className="text-[10px] font-bold text-neutral-400 uppercase block mb-1">
-                Select Client ({myAssignedClients.length} Assigned)
-              </label>
-              <select
-                value={assClient}
-                onChange={(e) => setAssClient(e.target.value)}
-                className="w-full bg-[#0A0A0B] border border-[#26262A] rounded-xl p-2.5 text-xs text-white focus:outline-none"
-              >
-                {myAssignedClients.length > 0 ? (
-                  myAssignedClients.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name} ({c.id})
-                    </option>
-                  ))
-                ) : (
-                  <option value="">No clients assigned to {currentCoachName} in Business OS</option>
-                )}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <label className="text-[10px] font-bold text-neutral-400 uppercase block mb-1">Weight (kg)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={assWeight}
-                  onChange={(e) => setAssWeight(e.target.value)}
-                  className="w-full bg-[#0A0A0B] border border-[#26262A] rounded-xl p-2 text-xs text-white focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold text-neutral-400 uppercase block mb-1">Body Fat %</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={assBodyFat}
-                  onChange={(e) => setAssBodyFat(e.target.value)}
-                  className="w-full bg-[#0A0A0B] border border-[#26262A] rounded-xl p-2 text-xs text-white focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold text-neutral-400 uppercase block mb-1">VO2 Max</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={assVo2}
-                  onChange={(e) => setAssVo2(e.target.value)}
-                  className="w-full bg-[#0A0A0B] border border-[#26262A] rounded-xl p-2 text-xs text-white focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-[10px] font-bold text-neutral-400 uppercase block mb-1">Assessment Observations</label>
-              <textarea
-                rows={2}
-                value={assNotes}
-                onChange={(e) => setAssNotes(e.target.value)}
-                className="w-full bg-[#0A0A0B] border border-[#26262A] rounded-xl p-2.5 text-xs text-white focus:outline-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-purple-600 text-white font-bold text-xs rounded-xl hover:bg-purple-500 transition"
-            >
-              Record Assessment to System 2
-            </button>
-          </form>
-
-          {/* Assessment History */}
-          <div className="space-y-2 pt-2 border-t border-[#26262A]">
-            {(() => {
-              const myAssessments = assessmentRecords.filter(
-                (ass) =>
-                  isClientAssignedToCoach(ass.assessedBy, currentCoachName) ||
-                  myAssignedClients.some(
-                    (c) => c.name.toLowerCase() === ass.clientName.toLowerCase() || c.id === ass.clientId
-                  )
-              );
-
-              return (
-                <>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                    {currentCoachName}'s Assessment Ledger ({myAssessments.length})
-                  </h4>
-                  {myAssessments.length === 0 ? (
-                    <div className="p-4 text-center bg-[#0A0A0B] border border-[#26262A] rounded-xl text-neutral-500 text-xs">
-                      No assessment records found for {currentCoachName}'s clients.
-                    </div>
-                  ) : (
-                    myAssessments.map((ass) => (
-                      <div key={ass.id} className="p-3 bg-[#0A0A0B] border border-[#26262A] rounded-xl text-xs space-y-1">
-                        <div className="flex justify-between items-center font-bold text-white">
-                          <span>{ass.clientName}</span>
-                          <span className="font-mono text-purple-400">{ass.weightKg} kg | {ass.bodyFatPercentage}% BF</span>
-                        </div>
-                        <div className="text-[10px] text-neutral-400">VO2 Max: {ass.vo2Max} · Notes: {ass.notes}</div>
-                        <div className="text-[10px] text-neutral-500">Assessed on {ass.date} by {ass.assessedBy}</div>
-                      </div>
-                    ))
-                  )}
-                </>
-              );
-            })()}
-          </div>
-        </div>
+        <CoachAssessmentWorkspace currentCoachName={currentCoachName} />
       )}
 
       {/* TAB 5: MY ASSIGNED ROSTER */}

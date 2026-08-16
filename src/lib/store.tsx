@@ -71,9 +71,6 @@ import {
   initialBatchTrainingGroups,
   initialGlobalExercises,
 } from '../data/initialData';
-import coachDanishImg from '../assets/images/coach_danish_portrait_1786654260335.jpg';
-import coachRoshanImg from '../assets/images/coach_roshan_portrait_1786654271869.jpg';
-import coachMuqeethImg from '../assets/images/coach_muqeeth_portrait_1786654282250.jpg';
 
 import {
   initializeFirebaseApp,
@@ -88,11 +85,11 @@ import {
 } from './firestoreService';
 
 export const DEFAULT_COACH_AVATARS: Record<string, string> = {
-  'Coach Danish': coachDanishImg,
-  'Coach Roshan': coachRoshanImg,
-  'Coach Muqeeth': coachMuqeethImg,
-  'Coach Ahmed (Head Coach)': coachDanishImg,
-  'Coach Tariq (Martial Arts)': coachMuqeethImg,
+  'Coach Danish': '',
+  'Coach Roshan': '',
+  'Coach Muqeeth': '',
+  'Coach Ahmed (Head Coach)': '',
+  'Coach Tariq (Martial Arts)': '',
 };
 
 export const DEFAULT_WEIGHTS: ScoreWeights = {

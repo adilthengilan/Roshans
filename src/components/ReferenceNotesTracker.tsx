@@ -52,14 +52,12 @@ export const ReferenceNotesTracker: React.FC = () => {
   const [tagsInput, setTagsInput] = useState('');
 
   // Diagram state in Add Form
-  const [diagramUrl, setDiagramUrl] = useState('');
   const [diagramCaption, setDiagramCaption] = useState('');
   const [diagramCode, setDiagramCode] = useState('');
-  const [activeDiagramTab, setActiveDiagramTab] = useState<'preset' | 'upload' | 'code'>('preset');
+  const [activeDiagramTab, setActiveDiagramTab] = useState<'preset' | 'code'>('preset');
 
   // Lightbox modal state
   const [lightboxDiagram, setLightboxDiagram] = useState<{
-    url?: string;
     code?: string;
     caption?: string;
     title: string;
@@ -175,31 +173,14 @@ export const ReferenceNotesTracker: React.FC = () => {
       (item.diagramCode && item.diagramCode.toLowerCase().includes(query)) ||
       (item.tags && item.tags.some((t) => t.toLowerCase().includes(query)));
 
-    const hasDiagram = Boolean(item.diagramUrl || item.diagramCode);
+    const hasDiagram = Boolean(item.diagramCode);
     const matchesDiagramOnly = !diagramOnlyFilter || hasDiagram;
 
     return matchesSubject && matchesTopic && matchesBook && matchesHeading && matchesQuery && matchesDiagramOnly;
   });
 
-  // Helper to handle image file upload for diagrams
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result) {
-          setDiagramUrl(reader.result as string);
-          if (!diagramCaption) {
-            setDiagramCaption(`Diagram: ${file.name.replace(/\.[^/.]+$/, '')}`);
-          }
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleCopyDiagram = (id: string, code?: string, url?: string, caption?: string) => {
-    const textToCopy = code || url || caption || 'Diagram';
+    const textToCopy = code || caption || 'Diagram';
     navigator.clipboard.writeText(textToCopy);
     setCopiedDiagId(id);
     setTimeout(() => setCopiedDiagId(null), 2000);
@@ -259,7 +240,6 @@ ${paragraph}`;
       source: source.trim() || bookInput.trim() || undefined,
       keyTakeaway: keyTakeaway.trim() || undefined,
       tags: tagsArray.length > 0 ? tagsArray : [finalSubject],
-      diagramUrl: diagramUrl.trim() || undefined,
       diagramCaption: diagramCaption.trim() || undefined,
       diagramCode: diagramCode.trim() || undefined,
     });
@@ -272,7 +252,6 @@ ${paragraph}`;
     setSource('');
     setKeyTakeaway('');
     setTagsInput('');
-    setDiagramUrl('');
     setDiagramCaption('');
     setDiagramCode('');
     setShowAddModal(false);
@@ -757,7 +736,7 @@ Serves as major leverage mechanisms for muscular origin/insertion during high-to
                 </div>
 
                 {/* Diagram / Figure Illustration Section */}
-                {(item.diagramUrl || item.diagramCode) && (
+                {item.diagramCode && (
                   <div className="bg-[#121215] border border-emerald-900/40 rounded-xl p-3 space-y-2">
                     <div className="flex items-center justify-between border-b border-emerald-900/30 pb-2">
                       <div className="flex items-center gap-1.5">
@@ -773,12 +752,12 @@ Serves as major leverage mechanisms for muscular origin/insertion during high-to
                             handleCopyDiagram(
                               item.id,
                               item.diagramCode,
-                              item.diagramUrl,
+                              undefined,
                               item.diagramCaption
                             )
                           }
                           className="text-[10px] font-semibold text-neutral-400 hover:text-white bg-[#1C1C20] px-2 py-0.5 rounded border border-[#2A2A30] transition flex items-center gap-1"
-                          title="Copy diagram code or link"
+                          title="Copy diagram code"
                         >
                           {copiedDiagId === item.id ? (
                             <Check className="w-3 h-3 text-emerald-400" />
@@ -791,7 +770,6 @@ Serves as major leverage mechanisms for muscular origin/insertion during high-to
                         <button
                           onClick={() =>
                             setLightboxDiagram({
-                              url: item.diagramUrl,
                               code: item.diagramCode,
                               caption: item.diagramCaption,
                               title: item.topic,
@@ -805,39 +783,13 @@ Serves as major leverage mechanisms for muscular origin/insertion during high-to
                       </div>
                     </div>
 
-                    {/* Diagram Image or Code Content */}
-                    {item.diagramUrl && (
-                      <div
-                        onClick={() =>
-                          setLightboxDiagram({
-                            url: item.diagramUrl,
-                            code: item.diagramCode,
-                            caption: item.diagramCaption,
-                            title: item.topic,
-                          })
-                        }
-                        className="cursor-pointer group relative overflow-hidden rounded-lg bg-black/40 border border-[#202024] flex items-center justify-center p-2 min-h-[140px]"
-                      >
-                        <img
-                          src={item.diagramUrl}
-                          alt={item.diagramCaption || item.topic}
-                          className="max-h-60 w-auto object-contain transition group-hover:scale-[1.02]"
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-1 text-white text-xs font-bold">
-                          <Eye className="w-4 h-4 text-emerald-400" /> Click to Enlarge Diagram
-                        </div>
-                      </div>
-                    )}
-
-                    {item.diagramCode && (
-                      <pre className="bg-[#0D0D10] text-emerald-300 font-mono text-[11px] p-3 rounded-xl border border-emerald-950 overflow-x-auto whitespace-pre leading-relaxed shadow-inner">
-                        {renderHighlightedText(item.diagramCode, searchQuery || headingQuery)}
-                      </pre>
-                    )}
+                    <pre className="bg-[#0D0D10] text-emerald-300 font-mono text-[11px] p-3 rounded-xl border border-emerald-950 overflow-x-auto whitespace-pre leading-relaxed shadow-inner">
+                      {renderHighlightedText(item.diagramCode, searchQuery || headingQuery)}
+                    </pre>
 
                     {item.diagramCaption && (
                       <p className="text-[10px] text-neutral-400 italic flex items-center gap-1.5 font-sans">
-                        <ImageIcon className="w-3 h-3 text-emerald-400 shrink-0" />
+                        <Code className="w-3 h-3 text-emerald-400 shrink-0" />
                         <span>Caption: {item.diagramCaption}</span>
                       </p>
                     )}
@@ -1019,17 +971,6 @@ For example:
                   </button>
                   <button
                     type="button"
-                    onClick={() => setActiveDiagramTab('upload')}
-                    className={`flex-1 py-1 rounded font-semibold transition ${
-                      activeDiagramTab === 'upload'
-                        ? 'bg-emerald-600 text-white shadow-sm'
-                        : 'text-neutral-400 hover:text-white'
-                    }`}
-                  >
-                    🖼️ Image / File
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setActiveDiagramTab('code')}
                     className={`flex-1 py-1 rounded font-semibold transition ${
                       activeDiagramTab === 'code'
@@ -1069,36 +1010,7 @@ For example:
                   </div>
                 )}
 
-                {/* Tab 2: Upload / URL */}
-                {activeDiagramTab === 'upload' && (
-                  <div className="space-y-2">
-                    <div>
-                      <label className="block text-[10px] font-medium text-neutral-400 mb-1">
-                        Upload Diagram Image File (PNG, JPG, SVG)
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="w-full text-xs text-neutral-300 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-950 file:text-emerald-300 hover:file:bg-emerald-900 cursor-pointer"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-medium text-neutral-400 mb-1">
-                        Or Paste Image URL directly
-                      </label>
-                      <input
-                        type="url"
-                        placeholder="https://example.com/diagram.png"
-                        value={diagramUrl}
-                        onChange={(e) => setDiagramUrl(e.target.value)}
-                        className="w-full bg-[#0A0A0B] border border-[#26262A] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Tab 3: Code / Flowchart */}
+                {/* Tab 2: Code / Flowchart */}
                 {activeDiagramTab === 'code' && (
                   <div>
                     <label className="block text-[10px] font-medium text-neutral-400 mb-1">
@@ -1189,13 +1101,7 @@ For example:
             </div>
 
             <div className="flex-1 overflow-auto flex items-center justify-center p-2 min-h-[300px]">
-              {lightboxDiagram.url ? (
-                <img
-                  src={lightboxDiagram.url}
-                  alt={lightboxDiagram.caption || lightboxDiagram.title}
-                  className="max-h-[65vh] w-auto object-contain rounded-lg shadow-lg"
-                />
-              ) : lightboxDiagram.code ? (
+              {lightboxDiagram.code ? (
                 <pre className="w-full bg-[#08080A] text-emerald-300 font-mono text-xs sm:text-sm p-5 rounded-2xl border border-emerald-900/50 overflow-x-auto whitespace-pre leading-relaxed shadow-inner">
                   {lightboxDiagram.code}
                 </pre>
@@ -1205,7 +1111,7 @@ For example:
             {lightboxDiagram.caption && (
               <div className="bg-[#18181C] border border-[#26262A] p-3 rounded-xl text-xs text-neutral-300 flex items-center justify-between">
                 <span className="italic flex items-center gap-1.5 font-sans">
-                  <ImageIcon className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <Code className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>{lightboxDiagram.caption}</span>
                 </span>
                 <button
@@ -1213,7 +1119,7 @@ For example:
                     handleCopyDiagram(
                       'lightbox',
                       lightboxDiagram.code,
-                      lightboxDiagram.url,
+                      undefined,
                       lightboxDiagram.caption
                     )
                   }
