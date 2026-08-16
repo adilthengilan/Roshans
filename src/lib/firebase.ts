@@ -17,12 +17,13 @@ import {
 // If environment variables or custom config are provided, they override these defaults.
 // Users can also customize their Firebase project config dynamically in Settings.
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyDemoKeyPrimeIntokine0123456789',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'intokine-prime-os.firebaseapp.com',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'intokine-prime-os',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'intokine-prime-os.appspot.com',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '100000000000',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:100000000000:web:abcdef123456',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDV-TX40p4dXOvxexH8MZr4f0xc2wTdxW0",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "roshans-demo.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "roshans-demo",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "roshans-demo.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "82761393543",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:82761393543:web:27aac22fa6588694a5df22",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-N6GB1WY851",
 };
 
 const FIREBASE_CONFIG_STORAGE_KEY = 'intokine_custom_firebase_config_v1';
